@@ -5,20 +5,11 @@
  */
 package maincontainer;
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
-import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
-import jade.core.behaviours.TickerBehaviour;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -26,9 +17,11 @@ import java.util.logging.Logger;
 /**
  *
  * @author Ir. M. El Adoui
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 
-public class CourtierAgent extends GuiAgent{
+public class courtierAgent extends GuiAgent{
     //private ClientGui gui;
     public static String pieceDemande="";
     public static String nbrpiece="";
@@ -104,12 +97,12 @@ public class CourtierAgent extends GuiAgent{
                                send(Notif);
                                
                            } catch (IOException ex) {
-                               Logger.getLogger(CourtierAgent.class.getName()).log(Level.SEVERE, null, ex);
+                               Logger.getLogger(courtierAgent.class.getName()).log(Level.SEVERE, null, ex);
                            }       
                         }
                        
                    } catch (UnreadableException ex) {
-                       Logger.getLogger(CourtierAgent.class.getName()).log(Level.SEVERE, null, ex);
+                       Logger.getLogger(courtierAgent.class.getName()).log(Level.SEVERE, null, ex);
                    }
                 }
               
@@ -124,7 +117,7 @@ public class CourtierAgent extends GuiAgent{
                    try {
                        Porposed = (String[]) msg.getContentObject();
                    } catch (UnreadableException ex) {
-                       Logger.getLogger(CourtierAgent.class.getName()).log(Level.SEVERE, null, ex);
+                       Logger.getLogger(courtierAgent.class.getName()).log(Level.SEVERE, null, ex);
                    }
                        String piecePropose  = Porposed[0];
                        double priceProposed = Double.parseDouble(Porposed[1]);

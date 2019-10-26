@@ -14,11 +14,12 @@ import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static maincontainer.Vendeur2Agent.priceTot;
 
 /**
  *
  * @author Ir. M. El Adoui
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 
 public class Vendeur1Agent extends GuiAgent {

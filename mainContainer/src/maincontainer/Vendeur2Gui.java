@@ -17,6 +17,8 @@ import javax.swing.JTextArea;
 /**
  *
  * @author Ir. M. El Adoui
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 public class Vendeur2Gui extends JFrame {
     private JTextArea TextArea = new JTextArea();

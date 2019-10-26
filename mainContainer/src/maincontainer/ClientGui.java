@@ -18,14 +18,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-//import javax.swing.JTextField;
 /**
  *
  * @author Ir. M. El Adoui
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 public class ClientGui extends JFrame {
     String courtiers[]= { "CourtierAgent","Courtier2Agent","Courtier3Agent"};
@@ -34,7 +34,6 @@ public class ClientGui extends JFrame {
    /*1:  plaquettes, 2 : suspensions, 3:  boite*/
     private JLabel ClientLab = new JLabel ("Selectionnez le courtier:");
     JComboBox jtextCourtiertLab = new JComboBox (courtiers);
-    //private JTextField jtextClientLab = new JTextField (12);
     
     private JLabel PieceLab = new JLabel ("ID de la piece :");
     private JComboBox jtextPieceLab = new JComboBox(pieces);

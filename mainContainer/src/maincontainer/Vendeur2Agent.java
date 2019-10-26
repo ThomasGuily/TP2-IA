@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 /**
  *
  * @author Ir. M. El Adoui
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 
 public class Vendeur2Agent extends GuiAgent {

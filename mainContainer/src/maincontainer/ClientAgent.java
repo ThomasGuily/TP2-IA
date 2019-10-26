@@ -5,18 +5,10 @@
  */
 package maincontainer;
 import jade.core.AID;
-import jade.core.Agent;
-import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.domain.DFService;
-import jade.domain.FIPAException;
-import jade.core.behaviours.OneShotBehaviour;
-import jade.core.behaviours.ParallelBehaviour;
-import jade.core.behaviours.TickerBehaviour;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -24,6 +16,8 @@ import java.util.logging.Logger;
 /**
  *
  * @author Sidi Ahmed Mahmoudi
+ * @author Guily Thomas
+ * @author Mistri Pierre-François
  */
 
 public class ClientAgent extends GuiAgent{
