@@ -53,45 +53,55 @@ public class Vendeur1Agent extends GuiAgent {
            String[] tmp;
            if(msg!=null){
                try {                   
-                   switch(msg.getPerformative()){
+                   switch(msg.getPerformative()){ //on regarde le type du message
+                       
+                       //-----------------Message de demande d'informations du courtier----------------
+                       
                    case ACLMessage.CFP:   
                        tmp = (String[]) msg.getContentObject();
                        String piece = tmp[0];
                        nbr= Integer.parseInt(tmp[1]);
-                       gui.showMessage("Demande d'achat de "+nbr+" piece(s)  de type : "+piece, true);
-                      
-                       gui.showMessage("Vendeur 1 : Type de message reçu CFP, je propose mon service ...", true);  
+                       gui.showMessage("Vendeur 1 : Type de message reçu CFP, je propose mes services", true);                         
+                       gui.showMessage("Demande d'achat de "+nbr+" pièce(s)  de type : "+piece, true);  
                        ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
                        message.addReceiver(new AID("courtierAgent", AID.ISLOCALNAME));
-                       try 
-                       {
+                                             
+                       priceTot = priceUnite * nbr;     //calcul du prix
+                       if (nbr > 3) {
+                           priceTot = priceTot - priceTot*(3/10); //prix réduit si > 3                           
+                       }
+                       try{
                            message.setContentObject(new String[]{porp,priceTot+""});
-                           // Envoyer le message avec l'ontologie "Vente"
-                           // ........
-                           // .........
+                           message.setOntology("Vente");
+                           send(message);                           
                        } 
                        catch (IOException ex) {
                            Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
                        }
                        break;
                        
+                       
+                       //-----------------Message de validation du courtier----------------
+                                              
                    case ACLMessage.ACCEPT_PROPOSAL:
-                       gui.showMessage("Notification : offre accepté par le courtier", true);
-                       // Calcul du prix total;
-                       double priceA=priceTot;
+                       gui.showMessage("Offre acceptée par le courtier", true);
+                       priceTot = priceUnite * nbr;
+                       gui.showMessage("Prix total : " + priceTot, true);
                        if(nbr>2){
-                       // Appliquer la réduction de 30% au prix total ....
-                       // Afichage un message de prmotion et le prix a payer
-                       // .......
-                       // .........
-                       }  
-                       // Aficcher le prix total obtenu (sans promotion)
-                       // Afficher des messages confimant la fin de la vente 
+                           gui.showMessage("Le nombre d'article étant > 3, il y a une réduction de 30%", true);
+                           priceTot = priceTot - priceTot*(3/10);
+                       }
+                       gui.showMessage("Vente terminée", true);
                        fin =5;
                        break;
+                       
+                       
+                       //-----------------Message de refus du courtier----------------
+                       
                    case ACLMessage.REFUSE:
-                       // Notifier via l'interface le refus de l'offre
-
+                       gui.showMessage("Article non disponible", true);
+                       gui.showMessage("Offre refusée par le courtier", true);
+                       gui.showMessage("Fin de l'interaction", true);
                        fin =5;
                        //myAgent.doDelete();
                        break;

@@ -6,6 +6,7 @@
 package maincontainer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JFrame;
@@ -22,13 +23,18 @@ public class Vendeur2Gui extends JFrame {
     //déclaration de l'agent Client
     private Vendeur2Agent Vendeur2;
     public Vendeur2Gui (){
-        // ... Acompléter
-        // ............
-        // ...........;
-        // ............
-        // ............
-        // ............
-        // ..........
+        JPanel Panel = new JPanel();
+        Panel.setLayout(new FlowLayout());
+
+        TextArea.setFont(new Font("Serif", Font.ITALIC, 15));
+        
+       // Panel.add(TextArea);
+        this.setTitle("Vendeur 2");
+        this.setLayout(new BorderLayout());
+        this.add(Panel, BorderLayout.NORTH);
+        this.add(new JScrollPane(TextArea), BorderLayout.CENTER);
+        this.setSize(510,500);
+        this.setVisible(true);
       }
 public Vendeur2Agent getVendeur2Agent(){
     return Vendeur2;
@@ -39,15 +45,12 @@ public void setVendeur2Agent(Vendeur2Agent Vendeur){
 }
 public void showMessage(String msg, boolean append){
     if(append==true){
-      // A compléter
-      // ...........
-      // ...........
-      // ...........
-      // ...........
+        TextArea.setBackground(Color.GRAY);
+        TextArea.append(msg+"\n");
+        TextArea.append("---------------------------------------------------------------------------------------------\n");    
     }
     else{
-        // A compléter
-        // ..........
+        TextArea.setText(msg);
     }
 }
 

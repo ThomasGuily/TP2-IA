@@ -6,6 +6,7 @@
 package maincontainer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JFrame;
@@ -32,7 +33,7 @@ public class Vendeur1Gui extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(Panel, BorderLayout.NORTH);
         this.add(new JScrollPane(TextArea), BorderLayout.CENTER);
-        this.setSize(350,500);
+        this.setSize(510,500);
         this.setVisible(true);
       }
 public Vendeur1Agent getVendeur2Agent(){
@@ -45,7 +46,7 @@ public void setVendeur1Agent(Vendeur1Agent Vendeur){
 public void showMessage(String msg, boolean append){
     if(append==true){
         TextArea.append(msg+"\n");
-        TextArea.append("------------------------------------------------------------\n");    }
+        TextArea.append("---------------------------------------------------------------------------------------------\n");    }
     else{
         TextArea.setText(msg);
     }

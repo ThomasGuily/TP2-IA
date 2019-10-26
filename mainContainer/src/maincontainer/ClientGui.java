@@ -29,7 +29,7 @@ import javax.swing.JTextArea;
  */
 public class ClientGui extends JFrame {
     String courtiers[]= { "CourtierAgent","Courtier2Agent","Courtier3Agent"};
-    String pieces[]= {"plaquettes","suspensions","boite"};
+    String pieces[]= {"plaquettes","suspensions","boîte"};
     String quantitie[]= {"1","2","3","4","5","7"};
    /*1:  plaquettes, 2 : suspensions, 3:  boite*/
     private JLabel ClientLab = new JLabel ("Selectionnez le courtier:");
@@ -67,7 +67,7 @@ public class ClientGui extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(Panel, BorderLayout.NORTH);
         this.add(new JScrollPane(TextArea), BorderLayout.CENTER);
-        this.setSize(800,400);
+        this.setSize(1600,400);
         this.setVisible(true);
         ButtonEnvoyer.addActionListener(new ActionListener(){
         
@@ -79,7 +79,7 @@ public class ClientGui extends JFrame {
             String quantitie = (String) jtextQuantLab.getSelectedItem();
             GuiEvent gev  = new GuiEvent(this,1);
             Map<String, Object> params = new HashMap<>();
-            params.put("courtierAgent",agentName);
+            params.put("CourtierAgent",agentName);
             params.put("piece", piece);
             params.put("quantitie", quantitie);
            

@@ -41,27 +41,46 @@ public class MainContainer {
         
       
         try {
-            // Crée le profil d'un nouveau conteneur personnel appelé 'Fils' en local
+            
+            //--------------------------Client----------------------------------
+            
             ProfileImpl profileImpl2= new ProfileImpl();
             profileImpl2.setParameter(ProfileImpl.CONTAINER_NAME, "Client");
             profileImpl2.setParameter(ProfileImpl.MAIN_HOST, "localhost");
-          
-            //crée le nouveau conteneur 'client'
-            AgentContainer agentContainer2 = runtime.createAgentContainer(profileImpl2);  
-            //crée un 1er agent appartenant au conteneur 'client' 
-            AgentController agentController1 = agentContainer2.createNewAgent("ClientAgent", ClientAgent.class.getName() , new Object[]{});
+                      
+            AgentContainer agentClient = runtime.createAgentContainer(profileImpl2);  
+            
+            AgentController agentController1 = agentClient.createNewAgent("ClientAgent", ClientAgent.class.getName() , new Object[]{});
             agentController1.start();
-            /*
+           
             
-            Créer les autres agents selon les question du protocole
-            // ..............
-            // ..............
-            // ..............
-            // ..............
-            // ..............
-            // ..............
+            //--------------------------Courtier--------------------------------
             
-            */  
+            ProfileImpl profileImpl3= new ProfileImpl();
+            profileImpl3.setParameter(ProfileImpl.CONTAINER_NAME, "Courtier");
+            profileImpl3.setParameter(ProfileImpl.MAIN_HOST, "localhost");
+                      
+            AgentContainer agentCourtier = runtime.createAgentContainer(profileImpl3);  
+            
+            AgentController agentController2 = agentCourtier.createNewAgent("CourtierAgent", CourtierAgent.class.getName() , new Object[]{});
+            agentController2.start();
+            
+            //--------------------------Vendeur---------------------------------
+            
+            ProfileImpl profileImpl4= new ProfileImpl();
+            profileImpl4.setParameter(ProfileImpl.CONTAINER_NAME, "Vendeur");
+            profileImpl4.setParameter(ProfileImpl.MAIN_HOST, "localhost");
+                      
+            AgentContainer agentVendeur = runtime.createAgentContainer(profileImpl4);  
+            
+            AgentController agentController3 = agentVendeur.createNewAgent("Vendeur1Agent", Vendeur1Agent.class.getName() , new Object[]{});
+            agentController3.start();
+            
+            AgentController agentController4 = agentVendeur.createNewAgent("Vendeur2Agent", Vendeur2Agent.class.getName() , new Object[]{});
+            agentController4.start();
+            
+            
+            
         } catch (ControllerException ex) {
                ex.printStackTrace();
     

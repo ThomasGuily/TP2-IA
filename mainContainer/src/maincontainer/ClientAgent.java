@@ -38,20 +38,17 @@ public class ClientAgent extends GuiAgent{
         gui.setClientAgent(this);
         gui.showMessage("Démarrage de l'agent Client", true);
         gui.showMessage("ID : 1->  plaquettes, 2-> suspensions, 3->  boite", true);
-        gui.showMessage("Promo : à l'achat de 3 pièces ou plus, une réduction de 30% vous sera réduite du prix total", true);
+        gui.showMessage("Promo : à l'achat de 3 pièces ou plus, une réduction de 30% vous sera réduite du prix total \n", true);
         
         this.addBehaviour(new CyclicBehaviour(){      
         @Override
         public void action(){
            //MessageTemplate msgTemp = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.INFORM),MessageTemplate.MatchOntology("vente"));
-           gui.showMessage("Agent Client : les info reçus en temps réel sont : ",true);
+           //gui.showMessage("Agent Client : les info reçues en temps réel sont : ",true);
            
            ACLMessage msg = receive();
-           if(msg!=null){
-               // Aficher toutes les informations liées au message sur l'interface (sender, contenu, langage, ontologie, etc.) 
-               // ..............
-               
-               //gui.showMessage("les paramètres du message \nx= "+msg.getUserDefinedParameter("x")+"\ny="+msg.getUserDefinedParameter("y"),true);
+           if(msg!=null){               
+           gui.showMessage("Ontologie : \"" + msg.getOntology()+"\" -- "+" Message reçu du " + msg.getSender().getLocalName()+ " : \"" + msg.getContent()+ "\"", true);                    
            }
            else block();
         }
@@ -64,23 +61,24 @@ public class ClientAgent extends GuiAgent{
     protected void onGuiEvent(GuiEvent ev){
          switch(ev.getType()){
             case 1:
-                gui.showMessage("Type d'évenement : 1", true);
+                //gui.showMessage("Type d'évenement : 1", true);
                 Map<String,Object> params= (Map<String,Object>) ev.getParameter(0);
                 
                 String piece=(String)params.get("piece");
-                String courtierAgent =(String)params.get("courtierAgent");
+                String CourtierAgent =(String)params.get("CourtierAgent");
                 String quantitie =(String)params.get("quantitie");
-                
-               
-                
+                               
+                               
          
             try { 
                 ACLMessage aclMsg=new ACLMessage(ACLMessage.REQUEST);
-                // Envoyer le message indiquant le type de pièce et quantité vers courtierAgent
-                //... Indiquer le destinataire
+                aclMsg.addReceiver(new AID(CourtierAgent,AID.ISLOCALNAME));
                 aclMsg.setContentObject(new String[]{piece,quantitie});
-                //... Ontology
-                //... Envoi;
+                aclMsg.setOntology("Module1"); 
+                send(aclMsg);
+                gui.showMessage("La commande a été envoyée au Courtier \n", true);
+                
+                
              } 
              catch (IOException ex) {
                  Logger.getLogger(ClientAgent.class.getName()).log(Level.SEVERE, null, ex);
