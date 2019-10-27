@@ -20,20 +20,19 @@ import java.util.logging.Logger;
  * @author Ir. M. El Adoui
  */
 
-public class Vendeur2Agent extends GuiAgent {
-   private Vendeur2Gui gui;
+public class Vendeur3Agent extends GuiAgent {
+   private Vendeur3Gui gui;
    String porp= "boite";
-   double priceUnite=79.99;
+   double priceUnite=99.99;
    static double priceTot=0;
    String piece;
    int nbr;
-   int stock = 3;
     @Override
     protected void setup(){
-        gui = new Vendeur2Gui();
+        gui = new Vendeur3Gui();
         //association d'une interface à l'agent
-        gui.setVendeur2Agent(this);
-        gui.showMessage("Démarrage de l'agent Vendeur 2 - Je suis en écoute", true);
+        gui.setVendeur3Agent(this);
+        gui.showMessage("Démarrage de l'agent Vendeur 3 - Je suis en écoute", true);
         
         ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         addBehaviour(parallelBehaviour);
@@ -56,72 +55,62 @@ public class Vendeur2Agent extends GuiAgent {
                try {                   
                    switch(msg.getPerformative()){
                    case ACLMessage.CFP:   
+                       
                        tmp = (String[]) msg.getContentObject();
-                       String piece = tmp[0];
-                       nbr= Integer.parseInt(tmp[1]);
-                       gui.showMessage("Demande d'achat de "+nbr+" piece(s)  de type : "+piece, true);
-                      
-                       gui.showMessage("Vendeur 1 : Type de message reçu CFP, je propose mon service ...", true);  
+                       piece = tmp[0];
+                       nbr= Integer.parseInt(tmp[1]);                            
+                       gui.showMessage("Vendeur 3 : Type de message reçu CFP, je propose mon service ...", true);  
                        ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
                        message.addReceiver(new AID("courtierAgent", AID.ISLOCALNAME));
-                       try 
-                       {
-                           if(nbr > 3)
-                            {
-                                priceTot = priceTot - priceTot*(3/10);
-                            }
+                       try {
+                           
+                       // A compléter 
+                       // ...........
+                       
+                           priceTot = priceUnite * nbr;
+                           
+                           if (nbr > 2) {
+                                priceTot = priceTot - priceTot*(5/10);                             
+                           }
                            message.setContentObject(new String[]{porp,priceTot+""});
-                           // Envoyer le message avec l'ontologie "Vente"
-
-                            
-                            message.setOntology("Vente"); 
-                            send(message);
-                            gui.showMessage("La proposition a été envoyée au Courtier \n", true);
-                            
-                           /*else
-                             {
-                    
-                               message.setOntology("Vente"); 
-                            send(message);
-                            gui.showMessage("Pas assez de stock \n", true);
-                           // ........
-                           // .........
-                            }*/
-                       } 
-                       catch (IOException ex) {
-                           Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
+                           message.setOntology("Vente3");
+                           send(message); 
+                      
+                       } catch (IOException ex) {
+                           Logger.getLogger(Vendeur2Agent.class.getName()).log(Level.SEVERE, null, ex);
                        }
                        break;
                        
                    case ACLMessage.ACCEPT_PROPOSAL:
-                       gui.showMessage("Notification : offre accepté par le courtier", true);
+                       // A compléter 
+                       gui.showMessage("Offre acceptée par le courtier", true);
                        priceTot = priceUnite * nbr;
-                       double priceA=priceTot;
                        gui.showMessage("Prix total : " + priceTot, true);
                        if(nbr>2){
-                          
-                          priceTot = priceUnite*3*0.7;
-                       gui.showMessage("Le prix proposé avec ristourne est de" +priceTot +"\n", true);
-                       // .......
-                       // .........
+                           gui.showMessage("Le nombre d'article étant >3, il y a une réduction de 50%", true);
+                           priceTot = priceTot - priceTot*(5/10);
                        }  
-                       // Aficcher le prix total obtenu (sans promotion)
-                       // Afficher des messages confimant la fin de la vente 
+                       gui.showMessage("Vente terminée", true);
                        fin =5;
                        break;
+                       
                    case ACLMessage.REFUSE:
-                       gui.showMessage("Offre refusée", true);
-
+                       // A compléter 
+                       gui.showMessage("Article non disponible", true);
+                       gui.showMessage("Offre refusée par le courtier", true);
+                       gui.showMessage("Fin de l'interaction", true);
                        fin =5;
                        //myAgent.doDelete();
                        break;
+
+
                    default : break; 
                } 
-                }
+               } 
                catch (UnreadableException ex) {
-                   Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
+                   Logger.getLogger(Vendeur2Agent.class.getName()).log(Level.SEVERE, null, ex);
                }   
-           }         
+               }          
             else block();
        }
           }); 

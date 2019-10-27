@@ -26,6 +26,7 @@ public class Vendeur1Agent extends GuiAgent {
    String porp= "suspensions";
    double priceUnite=29.99;
    double priceTot=0;
+   int stock = 2;
    int nbr;
     @Override
     protected void setup(){
@@ -65,11 +66,28 @@ public class Vendeur1Agent extends GuiAgent {
                        message.addReceiver(new AID("courtierAgent", AID.ISLOCALNAME));
                        try 
                        {
+                           if(nbr > 3)
+                            {
+                                priceTot = priceTot - priceTot*(3/10);
+                            }
                            message.setContentObject(new String[]{porp,priceTot+""});
                            // Envoyer le message avec l'ontologie "Vente"
+
+                            
+                            message.setOntology("Vente"); 
+                            send(message);
+                            gui.showMessage("La proposition a été envoyée au Courtier \n", true);
+
+                           /*else
+                             {
+                    
+                               message.setOntology("Vente"); 
+                            send(message);
+                            gui.showMessage("Pas assez de stock \n", true);
                            // ........
                            // .........
-                       } 
+                            }*/
+                        }
                        catch (IOException ex) {
                            Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
                        }
@@ -77,11 +95,13 @@ public class Vendeur1Agent extends GuiAgent {
                        
                    case ACLMessage.ACCEPT_PROPOSAL:
                        gui.showMessage("Notification : offre accepté par le courtier", true);
-                       // Calcul du prix total;
+                       priceTot = priceUnite * nbr;
                        double priceA=priceTot;
+                       gui.showMessage("Prix total : " + priceTot, true);
                        if(nbr>2){
-                       // Appliquer la réduction de 30% au prix total ....
-                       // Afichage un message de prmotion et le prix a payer
+                          
+                          priceTot = priceUnite*3*0.7;
+                       gui.showMessage("Le prix proposé avec ristourne est de" +priceTot +"\n", true);
                        // .......
                        // .........
                        }  
@@ -90,14 +110,14 @@ public class Vendeur1Agent extends GuiAgent {
                        fin =5;
                        break;
                    case ACLMessage.REFUSE:
-                       // Notifier via l'interface le refus de l'offre
+                       gui.showMessage("Offre refusée", true);
 
                        fin =5;
                        //myAgent.doDelete();
                        break;
                    default : break; 
                } 
-               } 
+               }
                catch (UnreadableException ex) {
                    Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
                }   

@@ -62,8 +62,10 @@ public class MainContainer {
             //crée un 1er agent appartenant au conteneur 'client' 
             AgentController agentVendeur1 = agentContainerVendeurs.createNewAgent("Vendeur1Agent", Vendeur1Agent.class.getName() , new Object[]{});
             AgentController agentVendeur2 = agentContainerVendeurs.createNewAgent("Vendeur2Agent", Vendeur2Agent.class.getName() , new Object[]{});
+            AgentController agentVendeur3 = agentContainerVendeurs.createNewAgent("Vendeur3Agent", Vendeur3Agent.class.getName() , new Object[]{});
             agentVendeur1.start();
             agentVendeur2.start();
+            agentVendeur3.start();
           
             
             // ..............

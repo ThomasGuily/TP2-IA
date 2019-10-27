@@ -6,6 +6,7 @@
 package maincontainer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import javax.swing.JFrame;
@@ -17,43 +18,42 @@ import javax.swing.JTextArea;
  *
  * @author Ir. M. El Adoui
  */
-public class Vendeur2Gui extends JFrame {
+public class Vendeur3Gui extends JFrame {
     private JTextArea TextArea = new JTextArea();
     //déclaration de l'agent Client
-    private Vendeur2Agent Vendeur2;
-    public Vendeur2Gui (){
+    private Vendeur3Agent Vendeur3;
+    public Vendeur3Gui (){
+        // ... Acompléter
         JPanel Panel = new JPanel();
         Panel.setLayout(new FlowLayout());
 
         TextArea.setFont(new Font("Serif", Font.ITALIC, 15));
         
        // Panel.add(TextArea);
-        this.setTitle("Vendeur 2");
+        this.setTitle("Vendeur 3");
         this.setLayout(new BorderLayout());
         this.add(Panel, BorderLayout.NORTH);
         this.add(new JScrollPane(TextArea), BorderLayout.CENTER);
-        this.setSize(350,500);
+        this.setSize(510,500);
         this.setVisible(true);
       }
-public Vendeur2Agent getVendeur2Agent(){
-    return Vendeur2;
+public Vendeur3Agent getVendeur3Agent(){
+    return Vendeur3;
 }
 
-public void setVendeur2Agent(Vendeur2Agent Vendeur){
-    this.Vendeur2=Vendeur;
+public void setVendeur3Agent(Vendeur3Agent Vendeur){
+    this.Vendeur3=Vendeur;
 }
 public void showMessage(String msg, boolean append){
     if(append==true){
-      if(append==true){
+        // A compléter
+        TextArea.setBackground(Color.GRAY);
         TextArea.append(msg+"\n");
-        TextArea.append("------------------------------------------------------------\n");    }
-    else{
-        TextArea.setText(msg);
-    }
+        TextArea.append("---------------------------------------------------------------------------------------------\n");
     }
     else{
         // A compléter
-        // ..........
+        TextArea.setText(msg);
     }
 }
 
