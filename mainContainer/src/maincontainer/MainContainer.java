@@ -17,8 +17,6 @@ import java.util.logging.Logger;
 /**
  *
  * @author Sidi Ahmed Mahmoudi
- * @author Guily Thomas
- * @author Mistri Pierre-François
  */
 public class MainContainer {
   /**
@@ -28,60 +26,61 @@ public class MainContainer {
         //crée l'instance de Runtime
         Runtime runtime = Runtime.instance();
         //Définir la propriété du conteneur
-        Properties Options = new ExtendedProperties();
+        Properties properties = new ExtendedProperties();
         //Afficher l'interface de JADE 
-        Options.setProperty(Profile.GUI, "true");
-        ProfileImpl Interface =new ProfileImpl(Options);
+        properties.setProperty(Profile.GUI, "true");
+        ProfileImpl profileImpl =new ProfileImpl(properties);
         //Créé l'agent principal
-        AgentContainer AgentInterface = runtime.createMainContainer(Interface);       
+        AgentContainer agentContainer1 = runtime.createMainContainer(profileImpl);       
         try {
             //Démmarer l'agent principal
-            AgentInterface.start();
+            agentContainer1.start();
         } catch (ControllerException ex) {  
             Logger.getLogger(MainContainer.class.getName()).log(Level.SEVERE, null, ex); 
         }
         
       
         try {
+            // Crée le profil d'un nouveau conteneur personnel appelé 'Client' en local
+            ProfileImpl profileClient= new ProfileImpl();
+            profileClient.setParameter(ProfileImpl.CONTAINER_NAME, "Client");
+            profileClient.setParameter(ProfileImpl.MAIN_HOST, "localhost");
+          
+            //crée le nouveau conteneur 'client'
+            AgentContainer agentContainerClient = runtime.createAgentContainer(profileClient);  
+            //crée un 1er agent appartenant au conteneur 'client' 
+            AgentController agentClient = agentContainerClient.createNewAgent("ClientAgent", ClientAgent.class.getName() , new Object[]{});
+            agentClient.start();
             
-            //____________________________Client________________________________
+            //courtier
+            ProfileImpl profileVendeurs= new ProfileImpl();
+            profileVendeurs.setParameter(ProfileImpl.CONTAINER_NAME, "Vendeurs");
+            profileVendeurs.setParameter(ProfileImpl.MAIN_HOST, "localhost");
+          
+            //crée le nouveau conteneur 'client'
+            AgentContainer agentContainerVendeurs = runtime.createAgentContainer(profileVendeurs);  
+            //crée un 1er agent appartenant au conteneur 'client' 
+            AgentController agentVendeur1 = agentContainerVendeurs.createNewAgent("Vendeur1Agent", Vendeur1Agent.class.getName() , new Object[]{});
+            AgentController agentVendeur2 = agentContainerVendeurs.createNewAgent("Vendeur2Agent", Vendeur2Agent.class.getName() , new Object[]{});
+            agentVendeur1.start();
+            agentVendeur2.start();
+          
             
-            ProfileImpl Client= new ProfileImpl();
-            Client.setParameter(ProfileImpl.CONTAINER_NAME, "Client");
-            Client.setParameter(ProfileImpl.MAIN_HOST, "localhost");
-                      
-            AgentContainer AgentClient = runtime.createAgentContainer(Client);  
-            
-            AgentController AgentClientController = AgentClient.createNewAgent("ClientAgent", ClientAgent.class.getName() , new Object[]{});
-            AgentClientController.start();
+            // ..............
+            ProfileImpl profileCourtier= new ProfileImpl();
+            profileCourtier.setParameter(ProfileImpl.CONTAINER_NAME, "Courtier");
+            profileCourtier.setParameter(ProfileImpl.MAIN_HOST, "localhost");
+          
+            //crée le nouveau conteneur 'client'
+            AgentContainer agentContainerCourtier = runtime.createAgentContainer(profileCourtier);  
+            //crée un 1er agent appartenant au conteneur 'client' 
+            AgentController agentCourtier = agentContainerCourtier.createNewAgent("courtierAgent", courtierAgent.class.getName() , new Object[]{});
+            agentCourtier.start();
            
-            //___________________________COURTIER_______________________________
+            // ..............
+      
             
-            ProfileImpl Courtier= new ProfileImpl();
-            Courtier.setParameter(ProfileImpl.CONTAINER_NAME, "Courtier");
-            Courtier.setParameter(ProfileImpl.MAIN_HOST, "localhost");
-                      
-            AgentContainer AgentCourtier = runtime.createAgentContainer(Courtier);  
-            
-            AgentController AgentCourtierController = AgentCourtier.createNewAgent("CourtierAgent", courtierAgent.class.getName() , new Object[]{});
-            AgentCourtierController.start();
-            
-            //___________________________VENDEUR________________________________
-            
-            ProfileImpl Vendeur = new ProfileImpl();
-            Vendeur.setParameter(ProfileImpl.CONTAINER_NAME, "Vendeur");
-            Vendeur.setParameter(ProfileImpl.MAIN_HOST, "localhost");
-                      
-            AgentContainer agentVendeur = runtime.createAgentContainer(Vendeur);  
-            
-            AgentController AgentVendeurController1 = agentVendeur.createNewAgent("Vendeur1Agent", Vendeur1Agent.class.getName() , new Object[]{});
-            AgentVendeurController1.start();
-            
-            AgentController AgentVendeurController2 = agentVendeur.createNewAgent("Vendeur2Agent", Vendeur2Agent.class.getName() , new Object[]{});
-            AgentVendeurController2.start();
-            
-            
-            
+       
         } catch (ControllerException ex) {
                ex.printStackTrace();
     

@@ -5,11 +5,20 @@
  */
 package maincontainer;
 import jade.core.AID;
+import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.CyclicBehaviour;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.ParallelBehaviour;
+import jade.core.behaviours.TickerBehaviour;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.gui.GuiAgent;
 import jade.gui.GuiEvent;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -17,8 +26,6 @@ import java.util.logging.Logger;
 /**
  *
  * @author Ir. M. El Adoui
- * @author Guily Thomas
- * @author Mistri Pierre-François
  */
 
 public class courtierAgent extends GuiAgent{
@@ -28,8 +35,6 @@ public class courtierAgent extends GuiAgent{
     public static String pieceEnregistre="piece";
     public static String AgentEnregistre="VendeurX";
     private AID[] listVendeurs;
-    public boolean passage = false;
-    public boolean trouve = false;
     @Override
     protected void setup(){
         //association d'une interface à l'agent
@@ -50,52 +55,46 @@ public class courtierAgent extends GuiAgent{
        
         @Override
         public void action(){
-           //System.out.println("Demarrage de l'agent courtier : ");
-          // MessageTemplate msgTemp1 = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST),MessageTemplate.MatchOntology("achat-vent"));           
+           System.out.println("Demarrage de l'agent courtier : ");
+          // MessageTemplate msgTemp1 = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.REQUEST),MessageTemplate.MatchOntology("achat-vent"));
+           
           // MessageTemplate msgTemp = MessageTemplate.and(MessageTemplate.MatchPerformative(ACLMessage.PROPOSE),MessageTemplate.MatchOntology("vent"));
            
            
            ACLMessage msg = receive();       
            if(msg!=null){     
-               String[] tmp = null; 
-               
-               //---------------------------------------------------------------------------------------
-               //-------------- On reçoit la demande du client et on transfert aux vendeurs ------------
-               //---------------------------------------------------------------------------------------
-               
+               String[] tmp = null; // l'object qui contient la demande du client 0: piece, 1: quantitie
                if(msg.getPerformative()==ACLMessage.REQUEST){
                    try {
                        tmp = (String[]) msg.getContentObject();
                        pieceDemande=tmp[0];
                        nbrpiece =tmp[1];
-                       System.out.println("Demande d'achat de "+nbrpiece+" pièce(s) de type : "+pieceDemande+" par l'agent"+msg.getSender().getLocalName() + "\n");
+                       System.out.println("demande d'achat de "+nbrpiece+" piece(s) de type : "+pieceDemande+" par l'agent"+msg.getSender().getLocalName());
                       
                        if(pieceDemande.equals(pieceEnregistre)){
-                        System.out.println("Je me rappelle bien que cette pièce est chez le vendeur : "+AgentEnregistre);
+                        System.out.println("je me rappelle bien que cette piece est chez le vendeur : "+AgentEnregistre);
                        } 
                        else
                         {  
                            try {
-                               
-                               //-----Envoi du message aux 2 vendeurs-----------
-                               
                                ACLMessage msgCFP = new ACLMessage(ACLMessage.CFP);
                                msgCFP.setContentObject(new String[]{pieceDemande,nbrpiece});
+                               // Envoi du message aux deux vendeurs
                                msgCFP.setOntology("DemandeDuClient");                               
                               
                                msgCFP.addReceiver(new AID("Vendeur1Agent",AID.ISLOCALNAME));
                                msgCFP.addReceiver(new AID("Vendeur2Agent",AID.ISLOCALNAME));
-                               send(msgCFP);     
-                                                              
-                               //-----Envoi de la notification au client--------
-                               
+                               send(msgCFP);
+                             
+                               // .....
+                               // .....
                                ACLMessage Notif= new ACLMessage(ACLMessage.INFORM);
                                Notif.setOntology("Achat-vente");
                                Notif.setLanguage("Francais");
-                               Notif.addReceiver(msg.getSender()); //on récupère l'adresse du client pour lui envoyé la notif
-                               Notif.setContent("Votre demande a été bien reçue, traitement en cours ...");    
-                               send(Notif);
-                               
+                               Notif.addReceiver(msg.getSender());
+                               Notif.setContent("Votre demande a été bien reçu, traitement en cours ...");    
+                               send(Notif);  //envoie de la notif au client !
+                               // envoie des Call of Proposals !
                            } catch (IOException ex) {
                                Logger.getLogger(courtierAgent.class.getName()).log(Level.SEVERE, null, ex);
                            }       
@@ -105,13 +104,7 @@ public class courtierAgent extends GuiAgent{
                        Logger.getLogger(courtierAgent.class.getName()).log(Level.SEVERE, null, ex);
                    }
                 }
-              
-               
-              //---------------------------------------------------------------------------------------
-              //----------------------- On traite les réponses des vendeurs ---------------------------
-              //---------------------------------------------------------------------------------------
-
-              
+                
               if(msg.getPerformative() == ACLMessage.PROPOSE){
                   String[] Porposed = null;
                    try {
@@ -122,60 +115,35 @@ public class courtierAgent extends GuiAgent{
                        String piecePropose  = Porposed[0];
                        double priceProposed = Double.parseDouble(Porposed[1]);
                        
-                       System.out.println("Le "+msg.getSender().getLocalName()+" propose " +nbrpiece+" pièce(s) "+piecePropose+" au prix total de "+priceProposed);
-                       
-                       //============== le vendeur a l'objet que le client recherche ==============
-                       
+                       System.out.println("le vendeur "+msg.getSender()+" propose la piece "+piecePropose+" au prix total de "+priceProposed);
                        if(piecePropose.equals(pieceDemande)){
-                           System.out.println("TROUVEE : le " + msg.getSender().getLocalName() +" peut nour fournir la(les) " + pieceDemande + "s\n");
-                           trouve = true;
-                           
-                           //---------- message validation au bon vendeur ----------
-                                                     
+                           System.out.println("TROUVEE : PieceDemande=  "+pieceDemande);
                            ACLMessage NotifAccept= new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
                            NotifAccept.addReceiver(msg.getSender());
-                           NotifAccept.setContent("La pièce a éte bien trouvée. Confirmation d'achat chez le vendeur "+msg.getSender().getLocalName());
-                           send(NotifAccept);
-                           
-                           //---------- on avertit le client ----------
+                           NotifAccept.setContent("La piece a éte bien trouvé Confirmation d'achat chez le vendeur"+msg.getSender().getName());
+                           // Envoyer la notification;
                            
                            ACLMessage Notif2= new ACLMessage(ACLMessage.INFORM);
                            Notif2.addReceiver(new AID("ClientAgent", AID.ISLOCALNAME));
-                           Notif2.setContent("Pièce(s) trouvée(s). Confirmation d'achat chez le vendeur "+msg.getSender().getLocalName() + " pour un total de " + priceProposed+ "€");
-                           Notif2.setOntology("Validation");
-                           send(Notif2);                           
-                           
-                           
+                           Notif2.setContent("La piece a éte bien trouvé Confirmation d'achat chez le vendeur"+msg.getSender().getName());
+                           // Envoyer la notification au client
+                           // ............
                            fin =5;
                            pieceEnregistre=pieceDemande;
                            AgentEnregistre=msg.getSender().getLocalName();
                        }
-                       
-                       
-                       //============== le vendeur N'a PAS l'objet que le client recherche ==============
-                       
                        else{
                            ACLMessage NotifRefu= new ACLMessage(ACLMessage.REFUSE);
                            NotifRefu.setOntology("Achat refuse");
                            NotifRefu.setLanguage("Francais");
                            NotifRefu.addReceiver(msg.getSender());
                            NotifRefu.setContent("la proposition de "+msg.getSender().getName()+" est refuse");
-                           send(NotifRefu);
+                           // Envoyer le message;
+                           // ......;
                        }
-                       passage = true;
-                                        
+                 
                }                      
            }
-           
-           /*       
-           if (trouve == false && passage == true){
-                ACLMessage Notif3= new ACLMessage(ACLMessage.INFORM);
-                Notif3.addReceiver(new AID("ClientAgent", AID.ISLOCALNAME));
-                Notif3.setContent("Aucun vendeur ne dispose de cet article");
-                Notif3.setOntology("Néant");
-                send(Notif3);
-            }*/
-           
            else block();
         }
         });

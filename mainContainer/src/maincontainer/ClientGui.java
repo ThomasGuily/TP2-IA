@@ -18,22 +18,23 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+//import javax.swing.JTextField;
 /**
  *
  * @author Ir. M. El Adoui
- * @author Guily Thomas
- * @author Mistri Pierre-François
  */
 public class ClientGui extends JFrame {
     String courtiers[]= { "CourtierAgent","Courtier2Agent","Courtier3Agent"};
-    String pieces[]= {"plaquettes","suspensions","boîte"};
+    String pieces[]= {"plaquettes","suspensions","boite"};
     String quantitie[]= {"1","2","3","4","5","7"};
    /*1:  plaquettes, 2 : suspensions, 3:  boite*/
     private JLabel ClientLab = new JLabel ("Selectionnez le courtier:");
     JComboBox jtextCourtiertLab = new JComboBox (courtiers);
+    //private JTextField jtextClientLab = new JTextField (12);
     
     private JLabel PieceLab = new JLabel ("ID de la piece :");
     private JComboBox jtextPieceLab = new JComboBox(pieces);
@@ -66,7 +67,7 @@ public class ClientGui extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(Panel, BorderLayout.NORTH);
         this.add(new JScrollPane(TextArea), BorderLayout.CENTER);
-        this.setSize(1600,400);
+        this.setSize(800,400);
         this.setVisible(true);
         ButtonEnvoyer.addActionListener(new ActionListener(){
         
@@ -78,7 +79,7 @@ public class ClientGui extends JFrame {
             String quantitie = (String) jtextQuantLab.getSelectedItem();
             GuiEvent gev  = new GuiEvent(this,1);
             Map<String, Object> params = new HashMap<>();
-            params.put("CourtierAgent",agentName);
+            params.put("courtierAgent",agentName);
             params.put("piece", piece);
             params.put("quantitie", quantitie);
            

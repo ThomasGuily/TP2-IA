@@ -14,12 +14,11 @@ import jade.lang.acl.UnreadableException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static maincontainer.Vendeur2Agent.priceTot;
 
 /**
  *
  * @author Ir. M. El Adoui
- * @author Guily Thomas
- * @author Mistri Pierre-François
  */
 
 public class Vendeur1Agent extends GuiAgent {
@@ -54,55 +53,45 @@ public class Vendeur1Agent extends GuiAgent {
            String[] tmp;
            if(msg!=null){
                try {                   
-                   switch(msg.getPerformative()){ //on regarde le type du message
-                       
-                       //-----------------Message de demande d'informations du courtier----------------
-                       
+                   switch(msg.getPerformative()){
                    case ACLMessage.CFP:   
                        tmp = (String[]) msg.getContentObject();
                        String piece = tmp[0];
                        nbr= Integer.parseInt(tmp[1]);
-                       gui.showMessage("Vendeur 1 : Type de message reçu CFP, je propose mes services", true);                         
-                       gui.showMessage("Demande d'achat de "+nbr+" pièce(s)  de type : "+piece, true);  
+                       gui.showMessage("Demande d'achat de "+nbr+" piece(s)  de type : "+piece, true);
+                      
+                       gui.showMessage("Vendeur 1 : Type de message reçu CFP, je propose mon service ...", true);  
                        ACLMessage message = new ACLMessage(ACLMessage.PROPOSE);
                        message.addReceiver(new AID("courtierAgent", AID.ISLOCALNAME));
-                                             
-                       priceTot = priceUnite * nbr;     //calcul du prix
-                       if (nbr > 3) {
-                           priceTot = priceTot - priceTot*(3/10); //prix réduit si > 3                           
-                       }
-                       try{
+                       try 
+                       {
                            message.setContentObject(new String[]{porp,priceTot+""});
-                           message.setOntology("Vente");
-                           send(message);                           
+                           // Envoyer le message avec l'ontologie "Vente"
+                           // ........
+                           // .........
                        } 
                        catch (IOException ex) {
                            Logger.getLogger(Vendeur1Agent.class.getName()).log(Level.SEVERE, null, ex);
                        }
                        break;
                        
-                       
-                       //-----------------Message de validation du courtier----------------
-                                              
                    case ACLMessage.ACCEPT_PROPOSAL:
-                       gui.showMessage("Offre acceptée par le courtier", true);
-                       priceTot = priceUnite * nbr;
-                       gui.showMessage("Prix total : " + priceTot, true);
+                       gui.showMessage("Notification : offre accepté par le courtier", true);
+                       // Calcul du prix total;
+                       double priceA=priceTot;
                        if(nbr>2){
-                           gui.showMessage("Le nombre d'article étant > 3, il y a une réduction de 30%", true);
-                           priceTot = priceTot - priceTot*(3/10);
-                       }
-                       gui.showMessage("Vente terminée", true);
+                       // Appliquer la réduction de 30% au prix total ....
+                       // Afichage un message de prmotion et le prix a payer
+                       // .......
+                       // .........
+                       }  
+                       // Aficcher le prix total obtenu (sans promotion)
+                       // Afficher des messages confimant la fin de la vente 
                        fin =5;
                        break;
-                       
-                       
-                       //-----------------Message de refus du courtier----------------
-                       
                    case ACLMessage.REFUSE:
-                       gui.showMessage("Article non disponible", true);
-                       gui.showMessage("Offre refusée par le courtier", true);
-                       gui.showMessage("Fin de l'interaction", true);
+                       // Notifier via l'interface le refus de l'offre
+
                        fin =5;
                        //myAgent.doDelete();
                        break;
